@@ -10,4 +10,9 @@ type protein struct {
     purchase_date time.Time
 }
 
+// protein db interface
+type ProteinService interface {
+   // DB logic goes here 
+}
+
 
