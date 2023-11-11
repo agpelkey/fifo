@@ -3,6 +3,7 @@ package food
 import (
 	"errors"
 	"time"
+
 )
 
 
@@ -21,9 +22,9 @@ type Protein struct {
 	Purchase_date time.Time `json:"purchase_date"`
 }
 
-// protein db interface
 type ProteinService interface {
-   // DB logic goes here 
+   CreateNewProtein(item Protein) error
+       
 }
 
 
@@ -45,8 +46,6 @@ func (p Protein) ValidateProtein() error {
 		return errUnitRequired
 	case p.Quantity == 0:
 		return errQuantityRequired
-	case p.Purchase_date != time.Now():
-		return errPurchaseDateRequired // definitely will need to test this
 	default:
 		return nil
 	}

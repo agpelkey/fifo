@@ -36,7 +36,7 @@ func main() {
 
 
     // add db connection
-    db, err := pgxpool.New(context.Background(), os.Getenv("FIFO_DB_DSN"))
+    db, err := pgxpool.New(context.Background(), os.Getenv("FIFO_DSN"))
     if err != nil {
         fmt.Fprintf(os.Stderr, "Unable to create database connection")
         os.Exit(1)
