@@ -20,15 +20,15 @@ func NewProteinStore(db *pgxpool.Pool) proteinDB {
 
 
 func (p proteinDB) CreateNewProtein(item food.Protein) error {
-    query := `INSERT INTO protein (item, unit, quantity) VALUES ($1, $2, $3) RETURNING item, unit, quantity`
+    query := `INSERT INTO protein (item, unit, quantity, purchase_date) VALUES ($1, $2, $3, $4) RETURNING item, unit, quantity, purchase_date`
 
     // create argument list to pass into db function
-    args := []interface{}{item.Item, item.Unit, item.Quantity}
+    args := []interface{}{item.Item, item.Unit, item.Quantity, item.Purchase_date}
 
     ctx, cancel := context.WithTimeout(context.Background(), 5 * time.Second)
     defer cancel()
 
-    return p.db.QueryRow(ctx, query, args...).Scan(&item.Item, &item.Unit, &item.Quantity)
+    return p.db.QueryRow(ctx, query, args...).Scan(&item.Item, &item.Unit, &item.Quantity, &item.Purchase_date)
 }
 
 // Get an item
