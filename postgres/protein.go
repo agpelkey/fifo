@@ -2,6 +2,8 @@ package postgres
 
 import (
 	"context"
+	"database/sql"
+	"errors"
 	"time"
 
 	"github.com/agpelkey/food"
@@ -32,6 +34,31 @@ func (p proteinDB) CreateNewProtein(item food.Protein) error {
 }
 
 // Get an item
+func (p proteinDB) GetProteinFromDB(item string) (*food.Protein, error) {
+    query := `SELECT item, unit, quantity FROM protein WHERE item='$1'`
+
+    ctx, cancel := context.WithTimeout(context.Background(), 5 * time.Second)
+    defer cancel()
+
+    var ProtienItem food.Protein
+
+    err := p.db.QueryRow(ctx, query, item).Scan(
+        &ProtienItem.Item,
+        &ProtienItem.Unit,
+        &ProtienItem.Quantity,
+        &ProtienItem.Purchase_date,
+    )
+    if err != nil {
+        switch {
+        case errors.Is(err, sql.ErrNoRows):
+            return nil, food.ErrProteinItemNotFound
+        default:
+            return nil, err
+        }
+    }
+
+    return &ProtienItem, nil
+}
 
 
 // Update an item

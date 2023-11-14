@@ -12,6 +12,8 @@ var (
 	errUnitRequired = errors.New("Item units required")
 	errQuantityRequired = errors.New("Item quantity required")
 	errPurchaseDateRequired = errors.New("Purchase date required")
+
+    ErrProteinItemNotFound = errors.New("item could not be found")
 )
 
 // create custom protein data type
@@ -24,7 +26,7 @@ type Protein struct {
 
 type ProteinService interface {
    CreateNewProtein(item Protein) error
-       
+   GetProteinFromDB(name string) (*Protein, error)
 }
 
 

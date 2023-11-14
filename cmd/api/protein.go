@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/agpelkey/food"
+	"github.com/julienschmidt/httprouter"
 )
 
 func (app application) NewProteinRequest(w http.ResponseWriter, r *http.Request) {
@@ -46,3 +47,28 @@ func (app application) NewProteinRequest(w http.ResponseWriter, r *http.Request)
 
 	err = writeJSON(w, http.StatusOK, envelope{"protein item added": NewProteinItem}, headers)
 }
+
+
+// Get an item
+func (app *application) GetProteinItem(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+    //queryItemName := r.URL.Query().Get("item") 
+
+    queryItemName := ps.ByName("item")
+
+    fmt.Println(queryItemName)
+
+    result, err := app.ProteinStore.GetProteinFromDB(queryItemName)
+    if err != nil {
+        app.notFoundResponse(w, r)
+        return
+    }
+
+    _ = writeJSON(w, http.StatusOK, envelope{"item": result}, nil)
+
+}
+
+
+// Update an item
+
+
+// Delete an item
