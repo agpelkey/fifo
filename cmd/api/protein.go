@@ -10,7 +10,7 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
-func (app application) NewProteinRequest(w http.ResponseWriter, r *http.Request) {
+func (app application) handleNewProtein(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	var input struct {
 		Item string `json:"item"`
 		Unit string `json:"unit"`
@@ -51,22 +51,25 @@ func (app application) NewProteinRequest(w http.ResponseWriter, r *http.Request)
 
 
 // Get an item
-func (app *application) GetProteinItem(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func (app *application) handleGetProtein(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
     queryItemName := ps.ByName("item")
 
     result, err := app.ProteinStore.GetProteinFromDB(queryItemName)
     if err != nil {
-        app.errorResponse(w, r, http.StatusBadRequest, fmt.Errorf("resource could not be found"))
-        //app.notFoundResponse(w, r)
+        writeJSON(w, http.StatusBadRequest, envelope{"error:": "item could not be found"}, nil)
+        return
     }
 
-    _ = writeJSON(w, http.StatusOK, envelope{"item":result}, nil)
+    err = writeJSON(w, http.StatusOK, envelope{"item":result}, nil)
+    if err != nil {
+        app.notFoundResponse(w, r)
+    }
 
 }
 
 
 // Update an item
-func (app *application) UpdateProteinItem(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func (app *application) handleUpdateProtein(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
     queryItemName := ps.ByName("item")
 
     itemResult, err := app.ProteinStore.GetProteinFromDB(queryItemName)
@@ -111,7 +114,21 @@ func (app *application) UpdateProteinItem(w http.ResponseWriter, r *http.Request
 }
 
 // Delete an item
+func (app *application) handleDeleteProtein(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+    queryItemName := ps.ByName("item")
 
+    err := app.ProteinStore.DeleteProteinItem(queryItemName)
+    if err != nil {
+        switch {
+        case errors.Is(err, food.ErrProteinItemNotFound):
+            app.notFoundResponse(w, r)
+        default:
+            app.serverErrorResponse(w, r, err)
+        }
+    }
+
+    err = writeJSON(w, http.StatusOK, envelope{"message": "item succesfully deleted"}, nil)
+}
 
 
 

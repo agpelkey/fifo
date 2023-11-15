@@ -29,6 +29,7 @@ type ProteinService interface {
    CreateNewProtein(item Protein) error
    GetProteinFromDB(name string) (*Protein, error)
    UpdateProteinItem(item *Protein) error
+   DeleteProteinItem(item string) error
 }
 
 

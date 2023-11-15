@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/agpelkey/food"
@@ -95,7 +96,23 @@ func (p proteinDB) UpdateProteinItem(item *food.Protein) error {
 }
 
 // Delete an item
+func (p proteinDB) DeleteProteinItem(item string) error {
+    query := `DELETE FROM protein WHERE item = $1`
 
+    ctx, cancel := context.WithTimeout(context.Background(), 5 * time.Second)
+    defer cancel()
+
+    result, err := p.db.Exec(ctx, query, item)
+    if err != nil {
+        return fmt.Errorf("failed to delete from protein items: %v", result)
+    }
+
+    if rows := result.RowsAffected(); rows != 1 {
+        return food.ErrProteinItemNotFound
+    }
+
+    return nil
+}
 
 
 
