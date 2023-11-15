@@ -15,5 +15,8 @@ func (app *application) routes() http.Handler {
     r.PATCH("/v1/fifo/protein/:item", app.handleUpdateProtein)
     r.DELETE("/v1/fifo/protein/:item", app.handleDeleteProtein)
 
+    r.POST("/v1/fifo/dairy", app.handleCreateDairyItem)
+    r.GET("/v1/fifo/dairy/:item", app.handleGetDairyItem)
+
     return r
 }

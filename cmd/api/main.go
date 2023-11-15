@@ -22,6 +22,7 @@ type application struct {
     config config
     // add future db interface connections here
     ProteinStore food.ProteinService
+    DairyStore food.DairyService
 }
 
 func main() {
@@ -48,6 +49,7 @@ func main() {
         config: cfg,
         // add futue application configs here
         ProteinStore: postgres.NewProteinStore(db),
+	DairyStore: postgres.NewDairyStore(db),
     }
 
     // start server

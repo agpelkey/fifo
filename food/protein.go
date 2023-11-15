@@ -13,8 +13,8 @@ var (
 	errQuantityRequired = errors.New("Item quantity required")
 	errPurchaseDateRequired = errors.New("Purchase date required")
 
-    ErrProteinItemNotFound = errors.New("item could not be found")
-    ErrEditConflict = errors.New("item could not be updated")
+    	ErrProteinItemNotFound = errors.New("item could not be found")
+    	ErrEditConflict = errors.New("item could not be updated")
 )
 
 // create custom protein data type
