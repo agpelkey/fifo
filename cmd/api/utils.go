@@ -5,6 +5,8 @@ import (
 	"errors"
 	"io"
 	"net/http"
+
+	"github.com/julienschmidt/httprouter"
 )
 
 type envelope map[string]interface{}
@@ -55,4 +57,8 @@ func writeJSON(w http.ResponseWriter, status int, data envelope, header http.Hea
     w.Write(js)
 
     return nil
+}
+
+func queryUrlParam(ps httprouter.Params) string {
+    return ps.ByName("item")
 }

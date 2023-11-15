@@ -52,7 +52,7 @@ func (app application) handleNewProtein(w http.ResponseWriter, r *http.Request, 
 
 // Get an item
 func (app *application) handleGetProtein(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-    queryItemName := ps.ByName("item")
+    queryItemName := queryUrlParam(ps)
 
     result, err := app.ProteinStore.GetProteinFromDB(queryItemName)
     if err != nil {
@@ -70,7 +70,7 @@ func (app *application) handleGetProtein(w http.ResponseWriter, r *http.Request,
 
 // Update an item
 func (app *application) handleUpdateProtein(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-    queryItemName := ps.ByName("item")
+    queryItemName := queryUrlParam(ps)
 
     itemResult, err := app.ProteinStore.GetProteinFromDB(queryItemName)
     if err != nil {
@@ -81,12 +81,8 @@ func (app *application) handleUpdateProtein(w http.ResponseWriter, r *http.Reque
             app.serverErrorResponse(w, r, err)
         }
     }
-
-    var payload struct {
-        Item *string `json:"item"`
-        Unit *string `json:"unit"`
-        Quantity *float32 `json:"quantity"`
-    }
+    
+    var payload food.ProteinUpdate
 
     err = readJSON(w, r, &payload)
     if err != nil {
@@ -115,7 +111,7 @@ func (app *application) handleUpdateProtein(w http.ResponseWriter, r *http.Reque
 
 // Delete an item
 func (app *application) handleDeleteProtein(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-    queryItemName := ps.ByName("item")
+    queryItemName := queryUrlParam(ps)
 
     err := app.ProteinStore.DeleteProteinItem(queryItemName)
     if err != nil {
@@ -129,6 +125,5 @@ func (app *application) handleDeleteProtein(w http.ResponseWriter, r *http.Reque
 
     err = writeJSON(w, http.StatusOK, envelope{"message": "item succesfully deleted"}, nil)
 }
-
 
 
