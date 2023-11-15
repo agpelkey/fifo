@@ -35,19 +35,22 @@ func (p proteinDB) CreateNewProtein(item food.Protein) error {
 
 // Get an item
 func (p proteinDB) GetProteinFromDB(item string) (*food.Protein, error) {
-    query := `SELECT item, unit, quantity FROM protein WHERE item='$1'`
+    query := `SELECT item, unit, quantity, purchase_date FROM protein WHERE item = $1`
 
     ctx, cancel := context.WithTimeout(context.Background(), 5 * time.Second)
     defer cancel()
 
     var ProtienItem food.Protein
 
-    err := p.db.QueryRow(ctx, query, item).Scan(
+    row := p.db.QueryRow(ctx, query, item)
+
+    err := row.Scan(
         &ProtienItem.Item,
         &ProtienItem.Unit,
         &ProtienItem.Quantity,
         &ProtienItem.Purchase_date,
     )
+
     if err != nil {
         switch {
         case errors.Is(err, sql.ErrNoRows):
@@ -62,6 +65,43 @@ func (p proteinDB) GetProteinFromDB(item string) (*food.Protein, error) {
 
 
 // Update an item
+func (p proteinDB) UpdateProteinItem(item *food.Protein) error {
+    query := `
+        UPDATE protein 
+        SET item = $1, unit = $2, quantity = $3
+        WHERE item = $1
+    `
 
+    queryArguments := []interface{}{
+        item.Item,
+        item.Unit,
+        item.Quantity,
+    }
+
+    ctx, cancel := context.WithTimeout(context.Background(), 5 * time.Second)
+    defer cancel()
+
+    row, err := p.db.Query(ctx, query, queryArguments...)
+    if err != nil {
+        switch {
+        case errors.Is(err, sql.ErrNoRows):
+            return food.ErrEditConflict
+        default:
+            return err
+        }
+    }
+
+    return row.Err()
+}
 
 // Delete an item
+
+
+
+
+
+
+
+
+
+

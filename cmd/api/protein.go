@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 	"time"
@@ -51,24 +52,66 @@ func (app application) NewProteinRequest(w http.ResponseWriter, r *http.Request)
 
 // Get an item
 func (app *application) GetProteinItem(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-    //queryItemName := r.URL.Query().Get("item") 
-
     queryItemName := ps.ByName("item")
-
-    fmt.Println(queryItemName)
 
     result, err := app.ProteinStore.GetProteinFromDB(queryItemName)
     if err != nil {
-        app.notFoundResponse(w, r)
-        return
+        app.errorResponse(w, r, http.StatusBadRequest, fmt.Errorf("resource could not be found"))
+        //app.notFoundResponse(w, r)
     }
 
-    _ = writeJSON(w, http.StatusOK, envelope{"item": result}, nil)
+    _ = writeJSON(w, http.StatusOK, envelope{"item":result}, nil)
 
 }
 
 
 // Update an item
+func (app *application) UpdateProteinItem(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+    queryItemName := ps.ByName("item")
 
+    itemResult, err := app.ProteinStore.GetProteinFromDB(queryItemName)
+    if err != nil {
+        switch {
+        case errors.Is(err, food.ErrProteinItemNotFound):
+            app.notFoundResponse(w, r)
+        default:
+            app.serverErrorResponse(w, r, err)
+        }
+    }
+
+    var payload struct {
+        Item *string `json:"item"`
+        Unit *string `json:"unit"`
+        Quantity *float32 `json:"quantity"`
+    }
+
+    err = readJSON(w, r, &payload)
+    if err != nil {
+        app.badRequestResponse(w, r, err)
+        return
+    }
+
+    if payload.Item != nil {
+        itemResult.Item = *payload.Item
+    }
+    if payload.Unit!= nil {
+        itemResult.Unit= *payload.Unit
+    }
+    if payload.Quantity != nil {
+        itemResult.Quantity = *payload.Quantity
+    }
+
+    err = app.ProteinStore.UpdateProteinItem(itemResult)
+    if err != nil {
+        app.errorResponse(w, r, http.StatusConflict, fmt.Errorf("there was a problem editing the item"))
+    }
+
+    _ = writeJSON(w, http.StatusOK, envelope{"message": "item successfully updated"}, nil)
+    
+}
 
 // Delete an item
+
+
+
+
