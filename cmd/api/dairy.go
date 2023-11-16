@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 	"time"
@@ -67,6 +68,59 @@ func (app *application) handleGetDairyItem(w http.ResponseWriter, r *http.Reques
 
 
 // PATCH
+func (app *application) handleUpdateDairy(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+    queryItemName := queryUrlParam(ps)
 
+    itemResult, err := app.DairyStore.GetDairyFromDB(queryItemName)
+    if err != nil {
+        switch {
+        case errors.Is(err, food.ErrDairyItemNotFound):
+            app.notFoundResponse(w, r)
+        default:
+            app.serverErrorResponse(w, r, err)
+        }
+    }
+    
+    var payload food.DairyItemUpdate
+
+    err = readJSON(w, r, &payload)
+    if err != nil {
+        app.badRequestResponse(w, r, err)
+        return
+    }
+
+    if payload.Item != nil {
+        itemResult.Item = *payload.Item
+    }
+    if payload.Unit!= nil {
+        itemResult.Unit= *payload.Unit
+    }
+    if payload.Quantity != nil {
+        itemResult.Quantity = *payload.Quantity
+    }
+
+    err = app.DairyStore.UpdateDairyItem(itemResult)
+    if err != nil {
+        app.errorResponse(w, r, http.StatusConflict, fmt.Errorf("there was a problem editing the item"))
+    }
+
+    _ = writeJSON(w, http.StatusOK, envelope{"message": "item successfully updated"}, nil)
+    
+}
 
 // DELETE
+func (app *application) handleDeleteDairy(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+    queryItemName := queryUrlParam(ps)
+
+    err := app.DairyStore.DeleteDairyItem(queryItemName)
+    if err != nil {
+        switch {
+        case errors.Is(err, food.ErrDairyItemNotFound):
+            app.notFoundResponse(w, r)
+        default:
+            app.serverErrorResponse(w, r, err)
+        }
+    }
+
+    err = writeJSON(w, http.StatusOK, envelope{"message": "item succesfully deleted"}, nil)
+}

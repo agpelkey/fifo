@@ -23,6 +23,7 @@ type application struct {
     // add future db interface connections here
     ProteinStore food.ProteinService
     DairyStore food.DairyService
+    DryGoodStore food.DryGoodService
 }
 
 func main() {
@@ -50,6 +51,7 @@ func main() {
         // add futue application configs here
         ProteinStore: postgres.NewProteinStore(db),
 	DairyStore: postgres.NewDairyStore(db),
+	DryGoodStore: postgres.NewDryGoodStore(db),
     }
 
     // start server
