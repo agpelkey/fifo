@@ -24,6 +24,7 @@ type application struct {
     ProteinStore food.ProteinService
     DairyStore food.DairyService
     DryGoodStore food.DryGoodService
+    FruitStore food.FruitService
 }
 
 func main() {
@@ -52,6 +53,7 @@ func main() {
         ProteinStore: postgres.NewProteinStore(db),
 	DairyStore: postgres.NewDairyStore(db),
 	DryGoodStore: postgres.NewDryGoodStore(db),
+	FruitStore: postgres.NewFruitStore(db),
     }
 
     // start server
