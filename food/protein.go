@@ -1,12 +1,12 @@
 package food
 
 import (
-	"errors"
+	//"errors"
 	"time"
 
 )
 
-
+/*
 var (
 	errItemNameRequired = errors.New("Item required")
 	errUnitRequired = errors.New("Item units required")
@@ -16,6 +16,7 @@ var (
     	ErrProteinItemNotFound = errors.New("item could not be found")
     	ErrEditConflict = errors.New("item could not be updated")
 )
+*/
 
 // create custom protein data type
 type Protein struct {
