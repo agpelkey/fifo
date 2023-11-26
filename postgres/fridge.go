@@ -21,7 +21,18 @@ func NewFridgeDB(db *pgxpool.Pool) fridgeDB {
 
 // Insert
 func (f *fridgeDB) InsertIntoFridge(item food.Items) error {
-	return nil
+    query := `
+        BEGIN;
+        INSERT INTO items (name, type, unit) VALUES ($1, $2, $3);
+        INSERT INTO fridge (item_id, quantity) VALUES ((SELECT item_id FROM items WHERE name = $1), $4);
+        COMMIT;`
+
+    args := []interface{}{item.Name, item.Type, item.Unit, item.Quantity}
+
+    ctx, cancel := context.WithTimeout(context.Background(), 5 * time.Second)
+    defer cancel()
+
+    return f.db.QueryRow(ctx, query, args...).Scan(&item.Name, &item.Type, &item.Unit, &item.Quantity)
 }
 
 // GET
