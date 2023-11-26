@@ -1,5 +1,6 @@
 package main
 
+/*
 import (
 	"errors"
 	"fmt"
@@ -10,8 +11,8 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
-func handle(w http.Res
 
+/*
 func (app application) handleNewProtein(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	var input struct {
 		Item string `json:"item"`
@@ -128,4 +129,4 @@ func (app *application) handleDeleteProtein(w http.ResponseWriter, r *http.Reque
     err = writeJSON(w, http.StatusOK, envelope{"message": "item succesfully deleted"}, nil)
 }
 
-
+*/

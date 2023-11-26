@@ -1,5 +1,6 @@
 package postgres
 
+/*
 import (
 	"context"
 	"database/sql"
@@ -112,3 +113,4 @@ func (d fruitDB) DeleteFruitItem(item string) error {
 
     return nil
 }
+*/

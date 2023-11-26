@@ -1,15 +1,16 @@
 package main
-
+/*
 import (
 	"errors"
 	"fmt"
 	"net/http"
 	"time"
 
-	"github.com/agpelkey/food"
+"github.com/agpelkey/food"
 	"github.com/julienschmidt/httprouter"
 )
 
+/*
 // POST
 func (app *application) handleCreateDairyItem(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	var jsonInput struct {
@@ -124,3 +125,4 @@ func (app *application) handleDeleteDairy(w http.ResponseWriter, r *http.Request
 
     err = writeJSON(w, http.StatusOK, envelope{"message": "item succesfully deleted"}, nil)
 }
+*/

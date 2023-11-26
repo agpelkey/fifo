@@ -1,5 +1,5 @@
 package postgres
-
+/*
 import (
 	"context"
 	"database/sql"
@@ -113,7 +113,7 @@ func (p proteinDB) DeleteProteinItem(item string) error {
 
     return nil
 }
-
+*/
 
 
 

@@ -10,7 +10,8 @@ import (
 func (app *application) routes() http.Handler {
     r := httprouter.New()
 
-    r.POST("/v1/fifo/protein", app.handleNewProtein)
+    /*
+    //r.POST("/v1/fifo/protein", app.handleNewProtein)
     r.GET("/v1/fifo/protein/:item", app.handleGetProtein)
     r.PATCH("/v1/fifo/protein/:item", app.handleUpdateProtein)
     r.DELETE("/v1/fifo/protein/:item", app.handleDeleteProtein)
@@ -24,11 +25,10 @@ func (app *application) routes() http.Handler {
     r.GET("/v1/fifo/dry_goods/:item", app.handleGetDryGoodsItem)
     r.PATCH("/v1/fifo/dry_goods/:item", app.handleUpdateDryGoods)
     r.DELETE("/v1/fifo/dry_goods/:item", app.handleDeleteDryGoods)
+    */
 
-    r.POST("/v1/fifo/fruit", app.)
-    r.GET("/v1/fifo/fruit/item", app.)
-    r.PATCH("/v1/fifo/fruit/:item", app.)
-    r.DELETE("/v1/fifo/fruit/:item", app.)
+
+    r.GET("/v1/fifo/:item", app.handleGetItemFromFridge)
 
 
     return r

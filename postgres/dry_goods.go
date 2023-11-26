@@ -1,5 +1,5 @@
 package postgres
-
+/*
 import (
 	"context"
 	"database/sql"
@@ -110,3 +110,4 @@ func (d dryGoodDB) DeleteDryGoodItem(item string) error {
 
     return nil
 }
+*/

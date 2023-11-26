@@ -26,19 +26,22 @@ func (f *fridgeDB) InsertIntoFridge(item food.Items) error {
 
 // GET
 func (f fridgeDB) GetItemFromFridge(name string) (food.Items, error) {
-	query := `SELECT name, type, quantity, unit FROM items WHERE name = $1`
+	query := `SELECT fridge.quantity, items.name, items.type, items.unit FROM fridge JOIN items ON items.name = $1`
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5 * time.Second)
 	defer cancel()
 
 	var item food.Items
 
-	if err := f.db.QueryRow(ctx, query, name).Scan(
-		item.Name,
-		item.Type,
-		item.Quantity,
-		item.Unit,
-	); err != nil {
+	row := f.db.QueryRow(ctx, query, name)
+
+    err := row.Scan(
+        &item.Quantity,
+		&item.Name,
+		&item.Type,
+		&item.Unit,
+	)
+    if err != nil {
 		switch {
 		case errors.Is(err, sql.ErrNoRows):
 			return food.Items{}, food.ErrItemNotFound

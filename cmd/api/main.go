@@ -21,10 +21,11 @@ type config struct {
 type application struct {
     config config
     // add future db interface connections here
-    ProteinStore food.ProteinService
-    DairyStore food.DairyService
-    DryGoodStore food.DryGoodService
-    FruitStore food.FruitService
+    //ProteinStore food.ProteinService
+    //DairyStore food.DairyService
+    //DryGoodStore food.DryGoodService
+    //FruitStore food.FruitService
+    ItemStore food.ItemStore
 }
 
 func main() {
@@ -50,10 +51,11 @@ func main() {
     app := &application{
         config: cfg,
         // add futue application configs here
-        ProteinStore: postgres.NewProteinStore(db),
-	DairyStore: postgres.NewDairyStore(db),
-	DryGoodStore: postgres.NewDryGoodStore(db),
-	FruitStore: postgres.NewFruitStore(db),
+        //ProteinStore: postgres.NewProteinStore(db),
+	    //DairyStore: postgres.NewDairyStore(db),
+	    //DryGoodStore: postgres.NewDryGoodStore(db),
+	    //FruitStore: postgres.NewFruitStore(db),
+        ItemStore: postgres.NewFridgeDB(db),
     }
 
     // start server

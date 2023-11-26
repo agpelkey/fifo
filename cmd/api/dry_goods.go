@@ -1,5 +1,5 @@
 package main
-
+/*
 import (
 	"errors"
 	"fmt"
@@ -124,3 +124,4 @@ func (app *application) handleDeleteDryGoods(w http.ResponseWriter, r *http.Requ
 
     err = writeJSON(w, http.StatusOK, envelope{"message": "item succesfully deleted"}, nil)
 }
+*/
