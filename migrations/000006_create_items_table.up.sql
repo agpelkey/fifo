@@ -2,5 +2,4 @@ CREATE TABLE IF NOT EXISTS items(
 	item_id SERIAL PRIMARY KEY,
 	name TEXT NOT NULL,
 	type TEXT NOT NULL,
-	unit TEXT NOT NULL,
-	quantity REAL);
+	unit TEXT NOT NULL);
