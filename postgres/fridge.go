@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"log"
 	"time"
 
 	"github.com/agpelkey/food"
@@ -20,19 +21,40 @@ func NewFridgeDB(db *pgxpool.Pool) fridgeDB {
 }
 
 // Insert
-func (f *fridgeDB) InsertIntoFridge(item food.Items) error {
-    query := `
-        BEGIN;
-        INSERT INTO items (name, type, unit) VALUES ($1, $2, $3);
-        INSERT INTO fridge (item_id, quantity) VALUES ((SELECT item_id FROM items WHERE name = $1), $4);
-        COMMIT;`
+func (f fridgeDB) InsertIntoFridge(item food.Items) error {
+    //var conn *pgxpool.Conn
 
-    args := []interface{}{item.Name, item.Type, item.Unit, item.Quantity}
-
-    ctx, cancel := context.WithTimeout(context.Background(), 5 * time.Second)
+    ctx, cancel := context.WithTimeout(context.Background(), 15 * time.Second)
     defer cancel()
 
-    return f.db.QueryRow(ctx, query, args...).Scan(&item.Name, &item.Type, &item.Unit, &item.Quantity)
+    args1 := []interface{}{item.Name, item.Type, item.Unit}
+    args2 := []interface{}{item.Name, item.Quantity}
+
+    tx, err := f.db.Begin(ctx)
+    if err != nil {
+        tx.Rollback(ctx)
+        log.Fatal(err)
+    }
+
+    _, err = tx.Exec(ctx, "INSERT INTO items (name, type, unit) VALUES ($1, $2, $3);", args1...)
+    if err != nil {
+        tx.Rollback(ctx)
+        log.Fatal(err)
+    }
+
+    _, err = tx.Exec(ctx, "INSERT INTO fridge (item_id, quantity) VALUES ((SELECT item_id FROM items WHERE name = $1), $2);", args2...)
+
+    err = tx.Commit(ctx)
+    if err != nil {
+        return err
+    }
+
+    return nil
+
+    //args := []interface{}{item.Name, item.Type, item.Unit, item.Quantity}
+
+
+    //return f.db.QueryRow(ctx, query, args...).Scan(&item.Name, &item.Type, &item.Unit)
 }
 
 // GET

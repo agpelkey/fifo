@@ -25,6 +25,7 @@ type Items struct {
 
 type ItemStore interface {
 	GetItemFromFridge(name string) (Items, error)
+    InsertIntoFridge(item Items) error
 }
 
 type ItemUpdate struct {
