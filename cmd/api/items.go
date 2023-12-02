@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 
@@ -65,3 +66,54 @@ func (app *application) handleInsertItem(w http.ResponseWriter, r *http.Request,
     _ = writeJSON(w, http.StatusOK, envelope{"item": newItem}, headers)
 
 }
+
+func (app *application) handleUpdateFridgeQuantity(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+
+    queryName := ps.ByName("item")
+
+    fridgeItem, err := app.ItemStore.GetItemFromFridge(queryName)
+    if err != nil {
+        switch {
+        case errors.Is(err, food.ErrItemNotFound):
+            app.notFoundResponse(w, r)
+        default:
+            app.serverErrorResponse(w, r, err)
+        }
+    }
+
+    var payload food.ItemUpdate
+
+    err = readJSON(w, r, &payload)
+    if err != nil {
+        app.badRequestResponse(w, r, err)
+        return
+    }
+
+    if payload.Name != nil {
+        fridgeItem.Name = *payload.Name
+    }
+
+    if payload.Type != nil {
+        fridgeItem.Type = *payload.Type
+    }
+
+    if payload.Unit != nil {
+        fridgeItem.Unit = *payload.Unit
+    }
+
+    err = app.ItemStore.UpdateFridgeItem(fridgeItem)
+    if err != nil {
+        app.errorResponse(w, r, http.StatusConflict, fmt.Errorf("There was a problem editing the item"))
+    }
+
+    _ = writeJSON(w, http.StatusOK, envelope{"message:": "item was succesfully updated"}, nil)
+}
+
+
+
+
+
+
+
+
+

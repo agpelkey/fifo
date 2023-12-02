@@ -16,7 +16,7 @@ var (
 )
 
 type Items struct {
-	//Item_id int `json:"item_id"`
+	Item_id int `json:"item_id"`
 	Name string `json:"name"`
 	Type string `json:"type"`
 	Unit string `json:"unit"`
@@ -26,6 +26,7 @@ type Items struct {
 type ItemStore interface {
 	GetItemFromFridge(name string) (Items, error)
     InsertIntoFridge(item Items) error
+    UpdateFridgeItem(item Items) error
 }
 
 type ItemUpdate struct {

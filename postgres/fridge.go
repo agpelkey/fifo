@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"fmt"
 	"log"
 	"time"
 
@@ -50,16 +51,11 @@ func (f fridgeDB) InsertIntoFridge(item food.Items) error {
     }
 
     return nil
-
-    //args := []interface{}{item.Name, item.Type, item.Unit, item.Quantity}
-
-
-    //return f.db.QueryRow(ctx, query, args...).Scan(&item.Name, &item.Type, &item.Unit)
 }
 
 // GET
 func (f fridgeDB) GetItemFromFridge(name string) (food.Items, error) {
-	query := `SELECT fridge.quantity, items.name, items.type, items.unit FROM fridge JOIN items ON items.name = $1`
+	query := `SELECT fridge.quantity, items.item_id, items.name, items.type, items.unit FROM fridge JOIN items ON items.name = $1`
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5 * time.Second)
 	defer cancel()
@@ -70,6 +66,7 @@ func (f fridgeDB) GetItemFromFridge(name string) (food.Items, error) {
 
     err := row.Scan(
         &item.Quantity,
+        &item.Item_id,
 		&item.Name,
 		&item.Type,
 		&item.Unit,
@@ -86,8 +83,49 @@ func (f fridgeDB) GetItemFromFridge(name string) (food.Items, error) {
 	return item, nil
 }
 
+// GET all items from fridge
+
 
 // UPDATE
+func (f fridgeDB) UpdateFridgeItem(item food.Items) error {
 
+    query := `UPDATE fridge SET quantity = $1 WHERE item_id = $2`
+    
+    ctx, cancel := context.WithTimeout(context.Background(), 10 * time.Second)
+    defer cancel()
+
+    args := []interface{}{item.Quantity}
+
+    _, err := f.db.Query(ctx, query, args...)
+    if err != nil {
+        fmt.Errorf("failed to update fridge item: %v", err)
+    }
+
+    return nil
+}
 
 // DELETE
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
