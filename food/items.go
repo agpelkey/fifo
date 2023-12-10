@@ -20,7 +20,7 @@ type Items struct {
 	Name string `json:"name"`
 	Type string `json:"type"`
 	Unit string `json:"unit"`
-	Quantity float64`json:"quantity"`
+    Quantity float64 `json:"quantity"`
 }
 
 type ItemStore interface {
@@ -34,6 +34,7 @@ type ItemUpdate struct {
 	Type *string `json:"type"`
 	Unit *string `json:"unit"`
 	Quantity *float64`json:"quantity"`
+    Item_id *int `json:"item_id"`
 }
 
 func (i Items) ValidateItemCreate() error {
@@ -44,8 +45,8 @@ func (i Items) ValidateItemCreate() error {
 		return errTypeRequired
 	case i.Unit == "":
 		return errUnitRequired
-	case i.Quantity == 0:
-		return errQuantityRequired
+    case i.Quantity == 0:
+        return errQuantityRequired
 	default:
 		return nil
 	}

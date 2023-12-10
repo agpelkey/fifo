@@ -30,6 +30,7 @@ func (app *application) routes() http.Handler {
 
     r.GET("/v1/fifo/:item", app.handleGetItemFromFridge)
     r.POST("/v1/fifo", app.handleInsertItem)
+    r.PATCH("/v1/fifo/:item", app.handleUpdateFridgeQuantity)
 
     return r
 }

@@ -89,6 +89,10 @@ func (app *application) handleUpdateFridgeQuantity(w http.ResponseWriter, r *htt
         return
     }
 
+    if payload.Item_id != nil {
+        fridgeItem.Item_id = *payload.Item_id
+    }
+
     if payload.Name != nil {
         fridgeItem.Name = *payload.Name
     }
@@ -99,6 +103,10 @@ func (app *application) handleUpdateFridgeQuantity(w http.ResponseWriter, r *htt
 
     if payload.Unit != nil {
         fridgeItem.Unit = *payload.Unit
+    }
+
+    if payload.Quantity != nil {
+        fridgeItem.Quantity = *payload.Quantity
     }
 
     err = app.ItemStore.UpdateFridgeItem(fridgeItem)

@@ -70,7 +70,7 @@ func (f fridgeDB) GetItemFromFridge(name string) (food.Items, error) {
 		&item.Name,
 		&item.Type,
 		&item.Unit,
-	)
+	) 
     if err != nil {
 		switch {
 		case errors.Is(err, sql.ErrNoRows):
@@ -81,6 +81,33 @@ func (f fridgeDB) GetItemFromFridge(name string) (food.Items, error) {
 	}
 
 	return item, nil
+}
+
+func (f fridgeDB) GetItemByID(id int) (food.Fridge, error) {
+    query := `SELECT fridge.item_id, fridge.quantity, fridge.purchase_date FROM fridge WHERE item_id = $1`
+
+    ctx, cancel := context.WithTimeout(context.Background(), 5 * time.Second)
+    defer cancel()
+
+    var item food.Fridge
+
+    row := f.db.QueryRow(ctx, query, id)
+
+    err := row.Scan(
+        &item.Item_id,
+        &item.Quantity,
+        &item.Purchase_date,
+    )
+    if err != nil {
+        switch {
+        case errors.Is(err, sql.ErrNoRows):
+            return food.Fridge{}, food.ErrFridgeItemNotFound
+        default:
+            return food.Fridge{}, err
+        }
+    }
+
+    return item, nil
 }
 
 // GET all items from fridge
