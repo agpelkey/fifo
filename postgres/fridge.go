@@ -116,12 +116,12 @@ func (f fridgeDB) GetItemByID(id int64) (food.Fridge, error) {
 // UPDATE
 func (f fridgeDB) UpdateFridgeItem(item food.Items) error {
 
-    query := `UPDATE fridge SET quantity = $1 WHERE item_id = $2`
+    query := `UPDATE fridge SET quantity = $1 WHERE item_id = (SELECT item_id FROM items WHERE name = $2)`
     
     ctx, cancel := context.WithTimeout(context.Background(), 10 * time.Second)
     defer cancel()
 
-    args := []interface{}{item.Quantity}
+    args := []interface{}{item.Quantity, item.Name}
 
     _, err := f.db.Query(ctx, query, args...)
     if err != nil {
