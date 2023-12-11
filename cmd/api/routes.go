@@ -28,7 +28,8 @@ func (app *application) routes() http.Handler {
     */
 
 
-    r.GET("/v1/fifo/:item", app.handleGetItemFromFridge)
+    //r.GET("/v1/fifo/:item", app.handleGetItemFromFridge)
+    r.HandlerFunc(http.MethodGet, "/v1/fifo/:id", app.handleGetItemByID)
     r.POST("/v1/fifo", app.handleInsertItem)
     r.PATCH("/v1/fifo/:item", app.handleUpdateFridgeQuantity)
 

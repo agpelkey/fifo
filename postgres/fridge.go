@@ -83,7 +83,7 @@ func (f fridgeDB) GetItemFromFridge(name string) (food.Items, error) {
 	return item, nil
 }
 
-func (f fridgeDB) GetItemByID(id int) (food.Fridge, error) {
+func (f fridgeDB) GetItemByID(id int64) (food.Fridge, error) {
     query := `SELECT fridge.item_id, fridge.quantity, fridge.purchase_date FROM fridge WHERE item_id = $1`
 
     ctx, cancel := context.WithTimeout(context.Background(), 5 * time.Second)

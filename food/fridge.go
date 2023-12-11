@@ -22,7 +22,8 @@ type Fridge struct {
 
 
 type FridgeStore interface {
-    UpdateFridgeItem(fridge Fridge) error
+    //UpdateFridgeItem(fridge Fridge) error
+    GetItemByID(id int64) (Fridge, error)
 }
 
 

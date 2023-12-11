@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/agpelkey/food"
 	"github.com/julienschmidt/httprouter"
@@ -24,6 +25,27 @@ func (app *application) handleGetItemFromFridge(w http.ResponseWriter, r *http.R
     if err != nil {
         app.serverErrorResponse(w, r, err)
     }
+
+}
+
+func (app *application) handleGetItemByID(w http.ResponseWriter, r *http.Request) {
+    id, err := app.readIDParam(r) 
+    if err != nil {
+        app.badRequestResponse(w, r, err)
+        return
+    }
+
+    item, err := app.FoodStore.GetItemByID(id)
+    if err != nil {
+        switch {
+        case errors.Is(err, food.ErrFridgeItemNotFound):
+            app.notFoundResponse(w, r)
+        default:
+            app.serverErrorResponse(w, r, err)
+        }
+    }
+
+    _ = writeJSON(w, http.StatusOK, envelope{"item": item}, nil)
 
 }
 
@@ -118,6 +140,16 @@ func (app *application) handleUpdateFridgeQuantity(w http.ResponseWriter, r *htt
 }
 
 
+func (app *application) readIDParam(r *http.Request) (int64, error) {
+    params := httprouter.ParamsFromContext(r.Context())
+
+    id, err := strconv.ParseInt(params.ByName("id"), 10, 64)
+    if err != nil {
+        return 0, errors.New("invalid id parameter")
+    }
+
+    return id, nil
+}
 
 
 
