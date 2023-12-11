@@ -32,6 +32,7 @@ func (app *application) routes() http.Handler {
     r.HandlerFunc(http.MethodGet, "/v1/fridge/:id", app.handleGetItemByID)
     r.POST("/v1/fifo", app.handleInsertItem)
     r.PATCH("/v1/fifo/:item", app.handleUpdateFridgeQuantity)
+    r.DELETE("/v1/fifo/:item", app.handleDeleteItem)
 
     return r
 }

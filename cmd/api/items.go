@@ -51,7 +51,7 @@ func (app *application) handleGetItemByID(w http.ResponseWriter, r *http.Request
 
 func (app *application) handleInsertItem(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
     var input struct {
-        Name string `json:"name"`
+        Name string `json:"name"` 
         Type string `json:"type"`
         Unit string `json:"unit"`
         Quantity float64 `json:"quantity"`
@@ -137,6 +137,19 @@ func (app *application) handleUpdateFridgeQuantity(w http.ResponseWriter, r *htt
     }
 
     _ = writeJSON(w, http.StatusOK, envelope{"message:": "item was succesfully updated"}, nil)
+}
+
+func (app *application) handleDeleteItem(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+    param := ps.ByName("item")
+
+    err := app.ItemStore.DeleteItemFromFridge(param)
+
+    if err != nil {
+        app.serverErrorResponse(w, r, err)
+        return
+    }
+
+    _ = writeJSON(w, http.StatusOK, envelope{"item deleted": ""}, nil)
 }
 
 

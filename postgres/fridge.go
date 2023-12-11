@@ -132,7 +132,20 @@ func (f fridgeDB) UpdateFridgeItem(item food.Items) error {
 }
 
 // DELETE
+func (f fridgeDB) DeleteItemFromFridge(item string) error {
+    query := `DELETE FROM items WHERE name = $1`
 
+    ctx, cancel := context.WithTimeout(context.Background(), 5 * time.Second)
+    defer cancel()
+
+    _, err := f.db.Exec(ctx, query, item)
+
+    if err != nil {
+        fmt.Errorf("failed to delete item %v", err)
+    }
+
+    return nil
+}
 
 
 
