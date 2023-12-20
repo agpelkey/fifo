@@ -23,7 +23,6 @@ func NewFridgeDB(db *pgxpool.Pool) fridgeDB {
 
 // Insert
 func (f fridgeDB) InsertIntoFridge(item food.Items) error {
-    //var conn *pgxpool.Conn
 
     ctx, cancel := context.WithTimeout(context.Background(), 15 * time.Second)
     defer cancel()
@@ -111,7 +110,9 @@ func (f fridgeDB) GetItemByID(id int64) (food.Fridge, error) {
 }
 
 // GET all items from fridge
-
+func (f fridgeDB) GetAllFridgeItems() ([]food.Items, error) {
+    return []food.Items{}, nil
+}
 
 // UPDATE
 func (f fridgeDB) UpdateFridgeItem(item food.Items) error {

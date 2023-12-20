@@ -29,10 +29,11 @@ func (app *application) routes() http.Handler {
 
 
     r.GET("/v1/fifo/:item", app.handleGetItemFromFridge)
-    r.HandlerFunc(http.MethodGet, "/v1/fridge/:id", app.handleGetItemByID)
+    //r.HandlerFunc(http.MethodGet, "/v1/fridge/:id", app.handleGetItemByID)
     r.POST("/v1/fifo", app.handleInsertItem)
     r.PATCH("/v1/fifo/:item", app.handleUpdateFridgeQuantity)
     r.DELETE("/v1/fifo/:item", app.handleDeleteItem)
+    http.HandleFunc("/", app.handleHTMX)
 
     return r
 }

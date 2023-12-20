@@ -3,12 +3,18 @@ package main
 import (
 	"errors"
 	"fmt"
+	"html/template"
 	"net/http"
 	"strconv"
 
 	"github.com/agpelkey/food"
 	"github.com/julienschmidt/httprouter"
 )
+
+func (app *application) handleHTMX(w http.ResponseWriter, r *http.Request) {
+    tmpl := template.Must(template.ParseFiles("/fifo-frontend/index.html"))
+    tmpl.Execute(w, nil)
+}
 
 func (app *application) handleGetItemFromFridge(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
      
