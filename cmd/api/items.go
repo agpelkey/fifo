@@ -18,9 +18,10 @@ func (app *application) handleHTMX(w http.ResponseWriter, r *http.Request) {
 
 func (app *application) handleGetItemFromFridge(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
      
-    queryName := ps.ByName("item")
+    id := ps.ByName("id")
+    queryID, err := strconv.Atoi(id)
 
-    result, err := app.ItemStore.GetItemFromFridge(queryName)
+    result, err := app.ItemStore.GetItemFromFridge(queryID)
     if err != nil {
         app.notFoundResponse(w, r)
         //app.serverErrorResponse(w, r, err)
@@ -98,8 +99,12 @@ func (app *application) handleInsertItem(w http.ResponseWriter, r *http.Request,
 func (app *application) handleUpdateFridgeQuantity(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 
     queryName := ps.ByName("item")
+    queryID, err := strconv.Atoi(queryName)
+    if err != nil {
+        app.badRequestResponse(w, r, err)
+    }
 
-    fridgeItem, err := app.ItemStore.GetItemFromFridge(queryName)
+    fridgeItem, err := app.ItemStore.GetItemFromFridge(queryID)
     if err != nil {
         switch {
         case errors.Is(err, food.ErrItemNotFound):

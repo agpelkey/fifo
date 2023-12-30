@@ -48,7 +48,7 @@ func main() {
         config: cfg,
         // add futue application configs here
         ItemStore: postgres.NewFridgeDB(db),
-        FoodStore: postgres.NewFridgeDB(db),
+        //FoodStore: postgres.NewFridgeDB(db),
     }
 
     // start server

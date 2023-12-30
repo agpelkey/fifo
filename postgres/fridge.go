@@ -53,19 +53,18 @@ func (f fridgeDB) InsertIntoFridge(item food.Items) error {
 }
 
 // GET
-func (f fridgeDB) GetItemFromFridge(name string) (food.Items, error) {
-	query := `SELECT fridge.quantity, items.item_id, items.name, items.type, items.unit FROM fridge JOIN items ON items.name = $1`
+func (f fridgeDB) GetItemFromFridge(id int) (food.Items, error) {
+	query := `SELECT fridge.quantity, items.name, items.type, items.unit FROM fridge JOIN items ON items.item_id = $1 WHERE fridge.item_id = $1;`
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5 * time.Second)
 	defer cancel()
 
 	var item food.Items
 
-	row := f.db.QueryRow(ctx, query, name)
+	row := f.db.QueryRow(ctx, query, id)
 
     err := row.Scan(
         &item.Quantity,
-        &item.Item_id,
 		&item.Name,
 		&item.Type,
 		&item.Unit,
@@ -82,6 +81,7 @@ func (f fridgeDB) GetItemFromFridge(name string) (food.Items, error) {
 	return item, nil
 }
 
+/*
 func (f fridgeDB) GetItemByID(id int64) (food.Fridge, error) {
     query := `SELECT fridge.item_id, fridge.quantity, fridge.purchase_date FROM fridge WHERE item_id = $1`
 
@@ -108,6 +108,7 @@ func (f fridgeDB) GetItemByID(id int64) (food.Fridge, error) {
 
     return item, nil
 }
+*/
 
 // GET all items from fridge
 func (f fridgeDB) GetAllFridgeItems() ([]food.Items, error) {
